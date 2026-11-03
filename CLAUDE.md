@@ -2,14 +2,15 @@
 
 공부 기록 캘린더 + 타임타이머 스타일 뽀모도로 앱. 웹(www/)과 안드로이드 앱(Capacitor APK) 둘 다.
 2026-10-15에 토익 전용 → 일반 공부 타이머로 방향 전환, 보이는 이름만 "Daily Study"로 바꿈.
-**내부 이름은 그대로 둔다**: 폴더 DailyToeic, 패키지 com.kch.dailytoeic(바꾸면 다른 앱으로 설치돼 기록이 안 넘어감),
+폴더는 2026-11-03에 `Desktop\DailyToeic` → `Desktop\DailyPomodoro`로 이름을 바꿨다 (GitHub 저장소 이름 daily-pomodoro에 맞춤).
+**앱 내부 이름은 그대로 둔다**: 패키지 com.kch.dailytoeic(바꾸면 다른 앱으로 설치돼 기록이 안 넘어감),
 localStorage 키 dailyToeic.*, 백업 JSON의 app:"DailyToeic"(예전 백업 가져오기 호환), SW 캐시 이름 daily-toeic-vNN.
 아이콘·스플래시는 `python tools/make_icons.py`로 다시 만든다 (LABEL="STUDY", APP_NAME="Daily Study").
 지금까지의 요청·변경 내역과 겪은 문제는 `개발일지/개발기록.md`에 있다 (새 세션은 먼저 읽을 것).
 
 ## GitHub
-- 저장소: https://github.com/Kangnagi/daily-pomodoro (공개, 브랜치 main). DailyToeic 폴더 자체가 git 저장소(2026-11-03 생성).
-  주의: 홈 폴더(C:\Users\kch36)도 git 저장소라서, 명령은 반드시 DailyToeic 폴더 안에서 실행할 것.
+- 저장소: https://github.com/Kangnagi/daily-pomodoro (공개, 브랜치 main). DailyPomodoro 폴더 자체가 git 저장소(2026-11-03 생성).
+  주의: 홈 폴더(C:\Users\kch36)도 git 저장소라서, 명령은 반드시 DailyPomodoro 폴더 안에서 실행할 것.
 - 이 PC에는 gh(GitHub CLI)가 없음. push는 Git Credential Manager에 저장된 로그인으로 됨.
 - 커밋·푸시는 사용자가 요청할 때만. node_modules·APK·local.properties는 .gitignore로 제외.
 
