@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 알림창 게이지 바: 알약 모양. 색은 코드에서 바꿈(Android 12+), 아래 색은 그보다 오래된 휴대폰용 기본값
+     채운 부분 = 같은 알약 모양을 왼쪽부터 비율만큼만 잘라서 보여줌(clip).
+     (예전 scale 방식은 알약을 가로로 줄여서, 폭이 높이보다 작아지면 세로로 긴 캡슐이 따로 떠 보였음 — 휴식 시작 직후 등) -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 빈 부분(트랙): 진한 같은 계열 색 -->
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <corners android:radius="999dp" />
+            <solid android:color="#FF6E2216" />
+        </shape>
+    </item>
+    <!-- 채워진 부분: 왼쪽 끝은 트랙과 같은 곡선, 오른쪽 끝은 남은 비율 위치에서 잘림 -->
+    <item android:id="@android:id/progress">
+        <clip android:clipOrientation="horizontal" android:gravity="left">
+            <shape android:shape="rectangle">
+                <corners android:radius="999dp" />
+                <solid android:color="#FFE2432A" />
+            </shape>
+        </clip>
+    </item>
+</layer-list>

@@ -1,0 +1,14 @@
+# 설치된 패키지 (package.json으로 다시 설치)
+node_modules/
+
+# 빌드 결과 (APK는 gradlew assembleDebug로 다시 만듦)
+builds/*.apk
+*.apk
+
+# 이 PC 전용 설정
+.claude/settings.local.json
+
+# 로그·임시 파일
+*.log
+.DS_Store
+Thumbs.db

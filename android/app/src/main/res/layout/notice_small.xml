@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 알림창(접힌 상태): 알약 모양 게이지 바 위에 "집중 중 · N분"(왼쪽 위)과 큰 시간(가운데) -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp">
+
+    <ProgressBar
+        android:id="@+id/noticeGauge"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:minHeight="48dp"
+        android:maxHeight="48dp"
+        android:max="1000"
+        android:progress="1000"
+        android:progressDrawable="@drawable/notice_gauge" />
+
+    <TextView
+        android:id="@+id/noticeTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="3dp"
+        android:maxLines="1"
+        android:shadowColor="#59000000"
+        android:shadowDy="1"
+        android:shadowRadius="3"
+        android:textColor="#FFFFFFFF"
+        android:textSize="10sp"
+        android:textStyle="bold" />
+
+    <Chronometer
+        android:id="@+id/noticeTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:shadowColor="#59000000"
+        android:shadowDy="1"
+        android:shadowRadius="4"
+        android:textColor="#FFFFFFFF"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/noticeTimeStatic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:shadowColor="#59000000"
+        android:shadowDy="1"
+        android:shadowRadius="4"
+        android:textColor="#FFFFFFFF"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+</FrameLayout>

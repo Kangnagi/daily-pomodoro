@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2f6fed">
+  <title>Daily Study</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // 화면 깜빡임 방지: 저장된 테마를 렌더링 전에 적용
+    try {
+      var t = localStorage.getItem("dailyToeic.theme");
+      if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <!-- ===== 홈: 한 화면에 요약 + D-day + 캘린더 ===== -->
+  <div class="home">
+    <header class="topbar">
+      <h1 id="appTitle">Daily Study</h1>
+      <div class="top-actions">
+        <button id="timerChip" class="timer-chip hidden" type="button" title="타이머로 이동"></button>
+        <button id="wtimerChip" class="timer-chip w-chip hidden" type="button" title="운동 타이머로 이동"></button>
+        <!-- 공부모드 ↔ 운동모드 (테마 변경은 설정 안으로) -->
+        <button id="btnMode" class="icon-btn mode-btn" aria-label="운동모드로 바꾸기" title="운동모드로 바꾸기">💪</button>
+        <button id="btnSettings" class="icon-btn" aria-label="설정" title="설정"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
+      </div>
+    </header>
+
+    <main class="home-main">
+      <section class="summary">
+        <div class="stat stat-exam"><span class="stat-label" id="statExamLabel">시험</span><span class="stat-value" id="statDday">-</span></div>
+        <div class="stat"><span class="stat-label" id="statStreakLabel">연속 학습</span><span class="stat-value" id="statStreak">0일</span></div>
+        <div class="stat"><span class="stat-label" id="statMonthLabel">이번 달</span><span class="stat-value" id="statMonth">0분</span></div>
+        <div class="stat"><span class="stat-label" id="statTodayLabel">오늘 공부</span><span class="stat-value" id="statToday">0분</span></div>
+      </section>
+
+      <section class="panel calendar">
+        <div class="exam-banner" id="examBanner"></div>
+        <div class="cal-head">
+          <button id="prevMonth" class="icon-btn" aria-label="이전 달">‹</button>
+          <h2 id="monthLabel"></h2>
+          <button id="nextMonth" class="icon-btn" aria-label="다음 달">›</button>
+          <button id="zoomBtn" class="small-btn" type="button">1년</button>
+          <button id="todayBtn" class="small-btn">오늘</button>
+        </div>
+        <!-- 한 달 보기 -->
+        <div class="cal-month" id="calMonth">
+          <div class="cal-grid cal-weekdays">
+            <div class="sun">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div class="sat">토</div>
+          </div>
+          <div class="cal-grid cal-days" id="calGrid"></div>
+        </div>
+        <!-- 1년 보기 (두 손가락으로 오므리면) -->
+        <div class="year-view hidden" id="yearView">
+          <div class="year-grid" id="yearGrid"></div>
+        </div>
+        <div class="legend">
+          <span id="legendAmount">학습량</span>
+          <i class="lv lv0"></i><i class="lv lv1"></i><i class="lv lv2"></i><i class="lv lv3"></i><i class="lv lv4"></i>
+          <span class="legend-dot"><b class="dot"></b> <span id="legendDot">점수</span> <span id="legendExam"><b class="exam-sq"></b> 시험일</span></span>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ===== 날짜 바텀시트: 공부 시작 / 통계 / 기록 ===== -->
+  <div class="sheet" id="daySheet" aria-hidden="true">
+    <div class="sheet-backdrop" id="sheetBackdrop"></div>
+    <div class="sheet-panel" role="dialog" aria-labelledby="sheetDate">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head">
+        <h2 id="sheetDate"></h2>
+        <div id="sheetTags"></div>
+      </div>
+      <p class="sheet-info" id="sheetInfo"></p>
+      <div class="sheet-actions">
+        <button type="button" id="sheetStudy" class="sheet-btn study">
+          <span class="ico"></span><span class="lbl">공부 시작</span><span class="sub" id="sheetStudySub">타이머</span>
+        </button>
+        <button type="button" id="sheetStats" class="sheet-btn stats">
+          <span class="ico"></span><span class="lbl">통계</span><span class="sub">이 달 요약</span>
+        </button>
+        <button type="button" id="sheetRecord" class="sheet-btn record">
+          <span class="ico"></span><span class="lbl">기록</span><span class="sub">이 날 기록</span>
+        </button>
+      </div>
+      <div class="sheet-exams" id="sheetExams"></div>
+    </div>
+  </div>
+
+  <!-- ===== 공부(타이머) 화면 ===== -->
+  <section class="screen" id="timerScreen" aria-label="공부 타이머">
+    <header class="screen-head">
+      <button type="button" class="icon-btn" data-back aria-label="뒤로">‹</button>
+      <h2>공부 타이머</h2>
+      <span class="screen-head-spacer"></span>
+    </header>
+    <div class="screen-body">
+      <div class="timer-wrap">
+
+        <!-- 타임타이머 스타일: 남은 시간만큼 색 원판이 채워지고 점점 줄어듦 -->
+        <div class="tt" id="ttBox">
+          <div class="tt-face">
+            <svg id="ttDial" viewBox="0 0 240 240" role="img" aria-label="타이머 다이얼">
+              <g id="ttTicks"></g>
+              <path id="ttWedge" class="tt-wedge"/>
+              <line id="ttHand" class="tt-hand" x1="120" y1="120" x2="120" y2="40"/>
+              <circle class="tt-knob-shadow" cx="121" cy="122" r="15"/>
+              <circle class="tt-knob" cx="120" cy="120" r="14"/>
+            </svg>
+          </div>
+        </div>
+        <div class="tt-readout">
+          <span class="ring-label" id="ringLabel">집중</span>
+          <span class="ring-time" id="ringTime">25:00</span>
+          <span class="ring-cycle" id="ringCycle">오늘 🍅 0개</span>
+        </div>
+        <p class="tt-hint" id="ttHint">원판을 드래그해서 집중 시간을 맞출 수 있어요</p>
+
+        <div class="timer-controls">
+          <button type="button" id="tReset" title="처음으로">↺</button>
+          <button type="button" id="tStart" class="main-btn">시작</button>
+          <button type="button" id="tSkip" title="지금까지 기록하고 휴식하기" aria-label="지금까지 기록하고 휴식하기"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l10 7-10 7V5Z" fill="currentColor"/><rect x="17" y="5" width="2.6" height="14" rx="1" fill="currentColor"/></svg></button>
+        </div>
+        <div class="tt-colors" id="ttColors" role="radiogroup" aria-label="타이머 색상"></div>
+
+        <details class="timer-settings">
+          <summary>시간 설정</summary>
+          <div class="timer-opts single">
+            <label>집중 시간 (분)<input type="number" id="oFocus" min="1" max="120" inputmode="numeric"></label>
+          </div>
+          <label class="timer-check"><input type="checkbox" id="oSound"> 시간 조절할 때 태엽 소리 (뜨르륵)</label>
+          <label class="timer-check" id="oHapticRow"><input type="checkbox" id="oHaptic"> 원판 돌릴 때 약한 진동</label>
+        </details>
+      </div>
+
+      <div class="session-head">
+        <h3 id="todaySessionTitle">오늘의 뽀모도로</h3>
+        <span id="todaySessionSum"></span>
+      </div>
+      <div class="sessions" id="todaySessions"></div>
+    </div>
+  </section>
+
+  <!-- ===== 통계 화면 ===== -->
+  <section class="screen" id="statsScreen" aria-label="통계">
+    <header class="screen-head">
+      <button type="button" class="icon-btn" data-back aria-label="뒤로">‹</button>
+      <h2>통계</h2>
+      <span class="screen-head-spacer"></span>
+    </header>
+    <div class="screen-body">
+      <h3 id="statsMonthTitle">이 달 요약</h3>
+      <div class="totals" id="monthTotals"></div>
+      <div id="weekChart" class="chart week-chart hidden"></div>
+      <!-- 하루 요약: 24시간 원형 시계 (색칠된 부분을 누르면 그때 공부 기록) -->
+      <div id="dayClockBox" class="day-clock-box hidden">
+        <div id="dayClock" class="day-clock"></div>
+        <div class="clock-legend"><span><i class="lg study"></i>공부</span><span><i class="lg rest"></i>휴식</span><span><i class="lg pause"></i>일시정지</span><span><i class="lg now"></i>지금</span></div>
+        <div id="dayClockDetail"></div>
+      </div>
+      <h3>점수 추이</h3>
+      <div class="name-chips" id="scoreNames"></div>
+      <div id="scoreChart" class="chart"></div>
+      <div class="exam-results" id="examResults"></div>
+      <h3>최근 30일 학습 시간</h3>
+      <div id="timeChart" class="chart"></div>
+      <h3 id="partTitle">과목별 공부 시간</h3>
+      <div id="partChart" class="parts-bars"></div>
+      <h3>전체 기록</h3>
+      <div id="recordList"></div>
+    </div>
+  </section>
+
+  <!-- ===== 기록 화면 ===== -->
+  <section class="screen" id="recordScreen" aria-label="기록">
+    <header class="screen-head">
+      <button type="button" class="icon-btn" data-back aria-label="뒤로">‹</button>
+      <h2 id="recordTitle">기록</h2>
+      <span class="screen-head-spacer"></span>
+    </header>
+    <form class="screen-body record-form" id="recordForm">
+      <div class="minutes-readonly">
+        <span class="mr-label">학습 시간 <small>(공부 타이머 기록)</small></span>
+        <span class="mr-value" id="fMinutes">0분</span>
+        <span class="mr-sub" id="fMinutesSub"></span>
+      </div>
+
+      <fieldset>
+        <legend>공부한 과목</legend>
+        <div class="part-checks" id="partChecks"></div>
+      </fieldset>
+
+      <label>외운 단어 수
+        <input type="number" id="fVocab" min="0" inputmode="numeric">
+      </label>
+
+      <fieldset>
+        <legend>점수 기록 (선택)</legend>
+        <div class="score-rows" id="scoreRows"></div>
+        <datalist id="nameList"></datalist>
+        <button type="button" id="btnAddScore" class="add-score">＋ 점수 추가 <small>모의고사·문제집 점수 등</small></button>
+      </fieldset>
+
+      <fieldset>
+        <legend>컨디션</legend>
+        <div class="moods" id="moods">
+          <label><input type="radio" name="mood" value="1"><span>😫</span></label>
+          <label><input type="radio" name="mood" value="2"><span>😕</span></label>
+          <label><input type="radio" name="mood" value="3"><span>😐</span></label>
+          <label><input type="radio" name="mood" value="4"><span>🙂</span></label>
+          <label><input type="radio" name="mood" value="5"><span>😄</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset id="daySessionsBox">
+        <legend>뽀모도로 기록</legend>
+        <div class="sessions" id="daySessions"></div>
+      </fieldset>
+
+      <label>메모 / 오답 노트
+        <textarea id="fMemo" rows="4" placeholder="틀린 문제, 새로 알게 된 내용 등"></textarea>
+      </label>
+
+      <div class="record-actions">
+        <button type="button" id="btnDelete" class="danger">삭제</button>
+        <span class="spacer"></span>
+        <button type="submit" class="primary">저장</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ===== 운동모드: 운동 타이머 (운동 시간 스톱워치 + 세트 사이 휴식) ===== -->
+  <section class="screen" id="wtimerScreen" aria-label="운동 타이머">
+    <header class="screen-head">
+      <button type="button" class="icon-btn" data-back aria-label="뒤로">‹</button>
+      <h2>운동 타이머</h2>
+      <span class="screen-head-spacer"></span>
+    </header>
+    <div class="screen-body">
+      <div class="w-card w-watch">
+        <span class="w-label">운동 시간</span>
+        <span class="w-watch-time" id="wWatch">00:00:00</span>
+        <div class="w-btns">
+          <button type="button" id="wStart" class="primary">운동 시작</button>
+          <button type="button" id="wFinish" class="hidden">운동 끝</button>
+        </div>
+      </div>
+
+      <div class="w-card w-rest" id="wRestBox">
+        <div class="w-rest-head"><span class="w-label">세트 사이 휴식</span><span class="w-sets" id="wSetCount">오늘 세트 0</span></div>
+        <div class="w-ring">
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <circle cx="100" cy="100" r="82" class="w-ring-bg"/>
+            <circle cx="100" cy="100" r="82" class="w-ring-arc" id="wRestArc" transform="rotate(-90 100 100)"/>
+          </svg>
+          <div class="w-ring-text"><span id="wRestLabel">휴식 시간</span><b id="wRestTime">1:30</b></div>
+        </div>
+        <div class="w-presets" id="wRestPresets" role="group" aria-label="휴식 시간"></div>
+        <div class="w-btns">
+          <button type="button" id="wSetDone" class="primary">세트 완료 · 휴식 시작</button>
+          <button type="button" id="wRestPlus" class="hidden">＋15초</button>
+          <button type="button" id="wRestSkip" class="hidden">건너뛰기</button>
+        </div>
+      </div>
+
+      <div class="w-card">
+        <span class="w-label">오늘 운동</span>
+        <p class="w-today" id="wToday"></p>
+        <button type="button" id="wOpenLog">운동 일지 쓰기</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 운동모드: 운동 일지 ===== -->
+  <section class="screen" id="wlogScreen" aria-label="운동 일지">
+    <header class="screen-head">
+      <button type="button" class="icon-btn" data-back aria-label="뒤로">‹</button>
+      <h2 id="wlogTitle">운동 일지</h2>
+      <span class="screen-head-spacer"></span>
+    </header>
+    <form class="screen-body record-form" id="wlogForm">
+      <div class="minutes-readonly">
+        <span class="mr-label">운동 시간 <small>(운동 타이머 기록)</small></span>
+        <span class="mr-value" id="wlMinutes">0분</span>
+        <span class="mr-sub" id="wlMinutesSub"></span>
+      </div>
+
+      <fieldset>
+        <legend>근력 운동</legend>
+        <div id="wlStrength" class="ex-list"></div>
+        <button type="button" id="wlAddStrength" class="add-score">＋ 근력 운동 추가 <small>종목·무게·횟수</small></button>
+        <datalist id="wlStrengthNames"></datalist>
+      </fieldset>
+
+      <fieldset>
+        <legend>유산소</legend>
+        <div id="wlCardio" class="ex-list"></div>
+        <button type="button" id="wlAddCardio" class="add-score">＋ 유산소 추가 <small>시간·거리</small></button>
+        <datalist id="wlCardioNames"></datalist>
+      </fieldset>
+
+      <fieldset>
+        <legend>운동 부위</legend>
+        <div class="part-checks" id="wlParts"></div>
+      </fieldset>
+
+      <label>몸무게 (kg)
+        <input type="number" id="wlWeight" min="0" step="0.1" inputmode="decimal" placeholder="예: 68.5">
+      </label>
+
+      <fieldset>
+        <legend>컨디션</legend>
+        <div class="moods" id="wlMoods">
+          <label><input type="radio" name="wmood" value="1"><span>😫</span></label>
+          <label><input type="radio" name="wmood" value="2"><span>😕</span></label>
+          <label><input type="radio" name="wmood" value="3"><span>😐</span></label>
+          <label><input type="radio" name="wmood" value="4"><span>🙂</span></label>
+          <label><input type="radio" name="wmood" value="5"><span>😄</span></label>
+        </div>
+      </fieldset>
+
+      <label>메모
+        <textarea id="wlMemo" rows="3" placeholder="자세, 컨디션, 다음에 올릴 무게 등"></textarea>
+      </label>
+
+      <div class="record-actions">
+        <button type="button" id="wlDelete" class="danger">삭제</button>
+        <span class="spacer"></span>
+        <button type="submit" class="primary">저장</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ===== 운동모드: 운동 통계 ===== -->
+  <section class="screen" id="wstatsScreen" aria-label="운동 통계">
+    <header class="screen-head">
+      <button type="button" class="icon-btn" data-back aria-label="뒤로">‹</button>
+      <h2>운동 통계</h2>
+      <span class="screen-head-spacer"></span>
+    </header>
+    <div class="screen-body">
+      <h3 id="wsTitle">운동 요약</h3>
+      <div class="totals" id="wsTotals"></div>
+      <div class="ws-day" id="wsDay"></div>
+      <h3>몸무게 변화</h3>
+      <div id="wsWeight" class="chart"></div>
+      <h3>최근 30일 운동 시간</h3>
+      <div id="wsTime" class="chart"></div>
+      <h3 id="wsPartTitle">부위별 운동</h3>
+      <div id="wsParts" class="body-map"></div>
+      <h3>종목별 최고 기록</h3>
+      <div id="wsBests" class="exam-results"></div>
+      <h3>전체 운동 기록</h3>
+      <div id="wsList"></div>
+    </div>
+  </section>
+
+  <!-- ===== 공부한 시간 화면 (지난 날짜: 타이머로 기록된 시간 보기) ===== -->
+  <section class="screen" id="studyLogScreen" aria-label="공부한 시간">
+    <header class="screen-head">
+      <button type="button" class="icon-btn" data-back aria-label="뒤로">‹</button>
+      <h2>공부한 시간</h2>
+      <span class="screen-head-spacer"></span>
+    </header>
+    <div class="screen-body">
+      <h3 id="studyLogDate"></h3>
+      <div id="studyLogSummary"></div>
+      <h3>공부 타이머 기록</h3>
+      <div class="sessions" id="studyLogList"></div>
+    </div>
+  </section>
+
+  <!-- ===== 뽀모도로 완료 / 세션 편집 창 ===== -->
+  <dialog id="sessionDialog">
+    <form method="dialog" id="sessionForm">
+      <p class="done-emoji" id="sDoneEmoji">🍅</p>
+      <h2 id="sessionTitle" style="text-align:center">집중 완료!</h2>
+      <p class="done-sub" id="sessionSub"></p>
+
+      <fieldset>
+        <legend>어떤 공부를 했나요?</legend>
+        <div class="part-checks" id="sessionParts"></div>
+      </fieldset>
+
+      <label>공부 내용
+        <textarea id="sessionNote" rows="3" placeholder="예: 수학 문제집 3단원 풀이, 오답 12개 정리"></textarea>
+      </label>
+
+      <div class="dialog-actions">
+        <button type="button" id="sessionDelete" class="danger hidden">삭제</button>
+        <span class="spacer"></span>
+        <button type="button" id="sessionLater">나중에</button>
+        <button type="submit" class="primary">저장</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ===== 시험 창: 시험 추가·수정, 시험 날부터 결과 입력 ===== -->
+  <dialog id="examDialog">
+    <form id="examForm">
+      <h2 id="examTitle">시험 추가</h2>
+      <p class="done-sub" id="examDate" style="text-align:left;margin:0"></p>
+      <label>시험 이름
+        <input type="text" id="examName" maxlength="20" placeholder="예: 토익, 정보처리기사 실기, 중간고사" autocomplete="off">
+      </label>
+      <fieldset id="examResult">
+        <legend>시험 결과</legend>
+        <label>점수 (선택) <input type="number" id="examScore" min="0" step="any" inputmode="decimal" placeholder="예: 850"></label>
+        <div class="pass-pick" id="examPass">
+          <label><input type="radio" name="examPass" value=""><span>미정</span></label>
+          <label><input type="radio" name="examPass" value="true"><span>합격</span></label>
+          <label><input type="radio" name="examPass" value="false"><span>불합격</span></label>
+        </div>
+      </fieldset>
+      <div class="dialog-actions">
+        <button type="button" id="examDelete" class="danger hidden">삭제</button>
+        <span class="spacer"></span>
+        <button type="button" id="examCancel">취소</button>
+        <button type="submit" class="primary">저장</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ===== 앱 안 확인·입력 창 (confirm/prompt 대신, js/core/ask.js) ===== -->
+  <dialog id="askDialog" class="ask-dialog">
+    <form id="askForm">
+      <p class="ask-message" id="askMessage"></p>
+      <input type="text" id="askInput" class="hidden" autocomplete="off">
+      <div class="dialog-actions">
+        <span class="spacer"></span>
+        <button type="button" id="askCancel">취소</button>
+        <button type="submit" id="askOk" class="primary">확인</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ===== 설정 창 ===== -->
+  <dialog id="settingsDialog">
+    <form method="dialog" id="settingsForm">
+      <h2>설정</h2>
+      <p class="hint" style="margin:0">시험은 캘린더에서 날짜를 누르고 ‘＋ 시험 추가’로 이름과 함께 등록해요.</p>
+      <fieldset>
+        <legend>테마</legend>
+        <div class="pass-pick theme-pick" id="themePick">
+          <label><input type="radio" name="theme" value="system"><span>시스템</span></label>
+          <label><input type="radio" name="theme" value="light"><span>밝게</span></label>
+          <label><input type="radio" name="theme" value="dark"><span>어둡게</span></label>
+        </div>
+      </fieldset>
+      <label>하루 목표 학습 시간 (분) <input type="number" id="sDaily" min="0" step="1" inputmode="numeric"></label>
+      <label>하루 목표 운동 시간 (분) <input type="number" id="sWDaily" min="0" step="1" inputmode="numeric"></label>
+
+      <fieldset>
+        <legend>공부 과목</legend>
+        <div class="subject-list" id="sSubjects"></div>
+        <div class="subject-add">
+          <input type="text" id="sSubjectNew" maxlength="12" placeholder="예: 영어, 수학, 정보처리기사">
+          <button type="button" id="sSubjectAdd">추가</button>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>계정</legend>
+        <div id="accountBox" class="account-box"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>백업</legend>
+        <div class="backup-row">
+          <button type="button" id="btnExport">내보내기 (JSON)</button>
+          <button type="button" id="btnImport">가져오기</button>
+          <input type="file" id="importFile" accept="application/json,.json" hidden>
+        </div>
+        <p class="hint">기록은 이 기기에 저장됩니다. 기기를 바꾸거나 데이터를 지우기 전에 내보내기 해두세요.</p>
+      </fieldset>
+      <p class="hint app-version" id="appVersion"></p>
+
+      <div class="dialog-actions">
+        <span class="spacer"></span>
+        <button type="button" id="btnSettingsCancel">닫기</button>
+        <button type="submit" class="primary">저장</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast"></div>
+
+  <!-- 공통 → 기능별 → 앱 시작 순서로 로드 -->
+  <script src="js/core/utils.js"></script>
+  <script src="js/core/audio.js"></script>
+  <script src="js/core/ask.js"></script>
+  <script src="js/core/store.js"></script>
+  <script src="js/core/workout-store.js"></script>
+  <script src="js/core/mode.js"></script>
+  <script src="js/core/router.js"></script>
+  <script src="js/core/cloud-config.js"></script>
+  <script src="js/core/firebase-provider.js"></script>
+  <script src="js/core/account.js"></script>
+  <script src="js/core/cloud-sync.js"></script>
+  <script src="js/features/theme.js"></script>
+  <script src="js/features/calendar-zoom.js"></script>
+  <script src="js/features/year-view.js"></script>
+  <script src="js/features/calendar.js"></script>
+  <script src="js/features/tip-banner.js"></script>
+  <script src="js/features/day-sheet.js"></script>
+  <script src="js/features/subject-picker.js"></script>
+  <script src="js/features/session-dialog.js"></script>
+  <script src="js/features/exam-dialog.js"></script>
+  <script src="js/features/study-log.js"></script>
+  <script src="js/features/record.js"></script>
+  <script src="js/features/wind-sound.js"></script>
+  <script src="js/features/dial-haptics.js"></script>
+  <script src="js/features/timer-dial.js"></script>
+  <script src="js/features/sfx.js"></script>
+  <script src="js/features/native-notifier.js"></script>
+  <script src="js/features/timer-notice.js"></script>
+  <script src="js/features/pomodoro.js"></script>
+  <script src="js/features/timer-screen.js"></script>
+  <script src="js/features/day-clock.js"></script>
+  <script src="js/features/stats.js"></script>
+  <script src="js/features/workout-timer.js"></script>
+  <script src="js/features/workout-screen.js"></script>
+  <script src="js/features/workout-log.js"></script>
+  <script src="js/features/body-map.js"></script>
+  <script src="js/features/workout-stats.js"></script>
+  <script src="js/features/settings.js"></script>
+  <script src="js/features/account-panel.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

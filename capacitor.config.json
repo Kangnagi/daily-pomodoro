@@ -1,0 +1,12 @@
+{
+  "appId": "com.kch.dailytoeic",
+  "appName": "Daily Study",
+  "webDir": "www",
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_notify",
+      "iconColor": "#2F6FED",
+      "sound": "focus_end.wav"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+rules_version = '2';
+
+// Daily TOEIC 클라우드 기록 보안 규칙
+// 로그인한 사용자는 자기 자신의 기록(users/{자기 uid} 아래)만 읽고 쓸 수 있다
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+
+      match /days/{day} {
+        allow read, write: if request.auth != null && request.auth.uid == uid
+          && day.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+      }
+    }
+
+    // 그 밖의 모든 경로는 막음
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
