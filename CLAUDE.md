@@ -7,6 +7,12 @@ localStorage 키 dailyToeic.*, 백업 JSON의 app:"DailyToeic"(예전 백업 가
 아이콘·스플래시는 `python tools/make_icons.py`로 다시 만든다 (LABEL="STUDY", APP_NAME="Daily Study").
 지금까지의 요청·변경 내역과 겪은 문제는 `개발일지/개발기록.md`에 있다 (새 세션은 먼저 읽을 것).
 
+## GitHub
+- 저장소: https://github.com/Kangnagi/daily-pomodoro (공개, 브랜치 main). DailyToeic 폴더 자체가 git 저장소(2026-11-03 생성).
+  주의: 홈 폴더(C:\Users\kch36)도 git 저장소라서, 명령은 반드시 DailyToeic 폴더 안에서 실행할 것.
+- 이 PC에는 gh(GitHub CLI)가 없음. push는 Git Credential Manager에 저장된 로그인으로 됨.
+- 커밋·푸시는 사용자가 요청할 때만. node_modules·APK·local.properties는 .gitignore로 제외.
+
 ## 사용자와 작업 규칙
 - 사용자와는 **한국어**로 대화한다. 코드 주석도 한국어.
 - **APK는 사용자가 "APK 새 버전으로 업데이트해줘"처럼 요청할 때만 만든다.** 기능 수정 후 자동으로 빌드하지 않는다.
