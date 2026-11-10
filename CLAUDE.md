@@ -60,8 +60,12 @@ localStorage 키 dailyToeic.*, 백업 JSON의 app:"DailyToeic"(예전 백업 가
   지갑(도트 화폐 아이콘), 다음 조각까지, 칭호 칩, 업적 목록(분류별·진행률, 숨은 업적은 ??? 표시).
 - `features/arcade-icons.js` DT.ArcadeIcons: 8×8 도트 SVG 화폐 아이콘(빨강·노랑·초록 토마토, 토마토 조각), 프로필 선 아이콘. 이모지 없음.
 
-## 현재 상태 (2026-11-09)
-- 최신 APK: `builds/DailyTOEIC.apk` = **2.1** (versionCode 13). APK 이후 아직 반영 안 된 변경 없음.
+## 현재 상태 (2026-11-10)
+- 최신 APK: `builds/Pomodoro.apk` (2026-11-10에 파일 이름을 DailyTOEIC.apk → Pomodoro.apk로 바꿈) = **2.2** (versionCode 14, 아케이드 1단계). APK 이후 아직 반영 안 된 변경 없음.
+  - 2.2 에뮬레이터 확인: 정산 창(테스트 기록 → Lv.9·업적 8개·노랑1 조각6), 프로필 버튼 → 프로필, 뒤로가기 → 메인, 업적 배너.
+  - 2.2 빌드 중 고친 것: 숨긴 배너 테두리가 휴대폰 상태 표시줄 아래로 보이던 것(visibility hidden + 더 위로),
+    프로필 "다음 조각까지" 바 높이 0(세로 flex 카드 안의 flex:1 → flex:none)
+- 2.1 에뮬레이터 확인: 모드 전환 시 위쪽 바 색이 파랑 → 청록 → 초록으로 0.9초 안에 바뀜, 앱 오류 없음
   - 2.1 에뮬레이터 확인: 모드 전환 시 위쪽 바 색이 파랑 → 청록 → 초록으로 0.9초 안에 바뀜, 앱 오류 없음
 - 2.1에 들어간 것:
   - 모드·테마를 바꿀 때 색이 0.7초 동안 섞이며 바뀜: style.css 맨 아래 `@property --primary/--primary-weak/--lv1~4`(색 타입 등록) + body transition.
@@ -148,7 +152,7 @@ android/                  Capacitor 안드로이드 프로젝트
   app/src/main/java/com/kch/dailytoeic/TimerNoticePlugin.java  show({mode,endAt|startAt|remainingMs,durationMs,focusMin,color,breakColor}) / hide
   app/src/main/java/com/kch/dailytoeic/TimerNoticeService.java 알림창 게이지 타이머 (2초 갱신·집중→휴식 전환)
   app/src/main/res/raw/focus_end.wav                           알림 소리(삐삐삐)
-builds/DailyTOEIC.apk     빌드 결과 (사용자에게 전달)
+builds/Pomodoro.apk     빌드 결과 (사용자에게 전달)
 docs/CLOUD_SETUP.md       계정 연동 켜는 방법
 개발일지/                 사용자가 관리하는 개발 정리 (docx/pdf는 2026-10-15 00:27 시점까지 내용)
 firestore.rules           클라우드 보안 규칙
@@ -171,7 +175,7 @@ firestore.rules           클라우드 보안 규칙
   `node "C:/Program Files/nodejs/node_modules/npm/bin/npm-cli.js" install ...`
   Capacitor: `node node_modules/@capacitor/cli/bin/capacitor sync android` (www만 바뀌면 `copy android`)
 - 빌드: `cd android` → `JAVA_HOME="C:/Program Files/Android/Android Studio/jbr"` (JDK 21), SDK `C:\Users\kch36\android-sdk`
-  → `./gradlew assembleDebug --no-daemon` → `android/app/build/outputs/apk/debug/app-debug.apk`를 `builds/DailyTOEIC.apk`로 복사.
+  → `./gradlew assembleDebug --no-daemon` → `android/app/build/outputs/apk/debug/app-debug.apk`를 `builds/Pomodoro.apk`로 복사.
   `android/local.properties`는 `sdk.dir=C\:\\Users\\kch36\\android-sdk` (백슬래시 두 개).
 - 웹 확인: `python -m http.server 5178 --directory www` 후 브라우저 창에서 `http://localhost:5178/index.html`.
   (preview_start는 License_Help_Web의 launch.json을 읽어 엉뚱한 서버를 띄움 → Bash 백그라운드로 직접 실행)

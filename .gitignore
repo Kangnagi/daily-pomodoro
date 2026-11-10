@@ -12,3 +12,6 @@ builds/*.apk
 *.log
 .DS_Store
 Thumbs.db
+
+# Android Studio 편집기 설정 (이 PC 전용)
+.idea/

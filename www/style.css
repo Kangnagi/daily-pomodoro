@@ -784,7 +784,7 @@ body {
 .pf-level { font-weight: 800; font-size: 1.1rem; color: var(--primary); min-width: 54px; }
 .pf-bar { flex: 1; height: 10px; border-radius: 6px; background: var(--lv0); overflow: hidden; }
 .pf-bar i { display: block; height: 100%; background: var(--primary); border-radius: 6px; transition: width .4s; }
-.pf-bar.pf-piece { height: 6px; }
+.pf-bar.pf-piece { height: 6px; flex: none; } /* 세로로 쌓이는 카드 안이라 flex:1이면 높이가 0이 됨 */
 .pf-bar.pf-piece i { background: #e5533d; }
 .pf-small { margin: 0; font-size: .78rem; color: var(--muted); }
 .pf-wallet { margin-top: 6px; }
@@ -822,12 +822,14 @@ body {
 /* 업적 달성·레벨업 배너 (위에서 내려옴, 누르면 프로필) */
 .arcade-banner {
   position: fixed; left: 50%; top: max(10px, env(safe-area-inset-top)); z-index: 60;
-  transform: translate(-50%, -140%); transition: transform .35s cubic-bezier(.2, .9, .3, 1.2);
+  /* 숨길 때는 화면 위로 완전히 빼고 보이지 않게 (휴대폰은 상태 표시줄만큼 위쪽 여백이 있어서 조금 빼면 테두리가 보였음) */
+  transform: translate(-50%, calc(-100% - 120px)); visibility: hidden; opacity: 0;
+  transition: transform .35s cubic-bezier(.2, .9, .3, 1.2), opacity .25s, visibility 0s .35s;
   width: min(360px, calc(100vw - 24px)); display: flex; align-items: center; gap: 12px;
   background: var(--card); color: var(--text); border-radius: 16px; padding: 10px 14px;
   box-shadow: 0 8px 24px rgba(0,0,0,.22); border: 2px solid var(--primary); cursor: pointer;
 }
-.arcade-banner.show { transform: translate(-50%, 0); }
+.arcade-banner.show { transform: translate(-50%, 0); visibility: visible; opacity: 1; transition: transform .35s cubic-bezier(.2, .9, .3, 1.2), opacity .25s, visibility 0s; }
 .arcade-banner.level { border-color: #e5533d; }
 .ab-badge { flex: none; display: flex; }
 .ab-text { display: flex; flex-direction: column; min-width: 0; }
