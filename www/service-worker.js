@@ -1,4 +1,4 @@
-const CACHE_NAME = "daily-toeic-v76";
+const CACHE_NAME = "daily-toeic-v88";
 const ASSETS = [
   "./", "./index.html", "./style.css", "./manifest.json", "./icon.svg",
   "./js/core/utils.js", "./js/core/audio.js", "./js/core/ask.js", "./js/core/store.js", "./js/core/workout-store.js", "./js/core/achievements.js", "./js/core/arcade-store.js", "./js/core/mode.js", "./js/core/router.js", "./js/core/cloud-config.js", "./js/core/firebase-provider.js", "./js/core/account.js", "./js/core/cloud-sync.js",

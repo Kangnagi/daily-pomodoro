@@ -372,7 +372,16 @@
       <div class="pf-card">
         <div class="pf-name-row">
           <button type="button" class="pf-nickname" id="pfNickname" title="닉네임 바꾸기">나</button>
-          <span class="pf-title" id="pfTitle">칭호 없음</span>
+          <!-- 칭호: 누르면 아래 목록 상자가 펼쳐짐 -->
+          <button type="button" class="pf-title" id="pfTitle" aria-expanded="false" aria-controls="pfTitlePanel">
+            <span id="pfTitleText">칭호 선택</span>
+            <svg class="pf-chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="title-wrap">
+          <div class="title-panel" id="pfTitlePanel" role="listbox" aria-label="칭호 목록"></div>
+          <button type="button" class="title-more up" id="pfTitleUp" aria-label="위 칭호 보기" tabindex="-1"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button type="button" class="title-more down" id="pfTitleDown" aria-label="아래 칭호 보기" tabindex="-1"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </div>
         <div class="pf-level-row">
           <span class="pf-level" id="pfLevel">Lv.1</span>
@@ -384,9 +393,6 @@
         <p class="pf-small" id="pfPieceText"></p>
         <p class="pf-small" id="pfStats"></p>
       </div>
-
-      <h3>칭호</h3>
-      <div class="title-chips" id="pfTitles"></div>
 
       <h3>업적 <small id="pfAchCount"></small></h3>
       <div id="pfAchievements"></div>

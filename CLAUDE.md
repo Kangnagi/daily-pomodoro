@@ -6,7 +6,7 @@
 **앱 내부 이름은 그대로 둔다**: 패키지 com.kch.dailytoeic(바꾸면 다른 앱으로 설치돼 기록이 안 넘어감),
 localStorage 키 dailyToeic.*, 백업 JSON의 app:"DailyToeic"(예전 백업 가져오기 호환), SW 캐시 이름 daily-toeic-vNN.
 아이콘·스플래시는 `python tools/make_icons.py`로 다시 만든다 (LABEL="STUDY", APP_NAME="Daily Study").
-지금까지의 요청·변경 내역과 겪은 문제는 `개발일지/개발기록.md`에 있다 (새 세션은 먼저 읽을 것).
+지금까지의 요청·변경 내역과 겪은 문제는 `개발일지/개발기록.md`에 있다 (새 세션은 먼저 읽을 것). 용어 모음은 `개발일지/용어정리.md`.
 
 ## GitHub
 - 저장소: https://github.com/Kangnagi/daily-pomodoro (공개, 브랜치 main). DailyPomodoro 폴더 자체가 git 저장소(2026-11-03 생성).
@@ -16,6 +16,8 @@ localStorage 키 dailyToeic.*, 백업 JSON의 app:"DailyToeic"(예전 백업 가
 
 ## 사용자와 작업 규칙
 - 사용자와는 **한국어**로 대화한다. 코드 주석도 한국어.
+- 사용자 설명이 모호하거나 그 현상·기능을 부르는 **용어가 있으면 답변에서 설명**하고 `개발일지/용어정리.md` 표에 추가한다
+  (뜻·이 앱에서의 예·"이렇게 요청하면 됨"·개발기록 번호). 예: 스크롤 체이닝, 스태거, 이징.
 - **APK는 사용자가 "APK 새 버전으로 업데이트해줘"처럼 요청할 때만 만든다.** 기능 수정 후 자동으로 빌드하지 않는다.
   웹(www/)에서 확인하고 보고만 한다. 앱(WebView)에서만 확인 가능한 것(진동, 알림, 앱 오디오)은 "APK 업데이트 때 같이 확인"이라고 알린다.
   안드로이드 Java 문법 확인은 APK 없이 `gradlew :app:compileDebugJavaWithJavac` 로 한다.

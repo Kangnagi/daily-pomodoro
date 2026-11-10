@@ -17,7 +17,8 @@
   const LEVEL_PIECES = 2;   // 레벨업마다 받는 조각
   const TICKET_EVERY = 5;   // 이 레벨마다 뽑기권 1장
   // levelSeen: 마지막으로 알려준 레벨 (레벨업 배너용)
-  const DEFAULT = { achievements: {}, spent: 0, title: null, nickname: "", ticketsUsed: 0, settledAt: null, levelSeen: 1 };
+  // titlesSeen: 칭호 목록에서 이미 본 칭호 (새 칭호에 NEW 표시용)
+  const DEFAULT = { achievements: {}, spent: 0, title: null, nickname: "", ticketsUsed: 0, settledAt: null, levelSeen: 1, titlesSeen: [] };
 
   const xpToNext = (level) => 60 * (level + 1);
 
@@ -182,6 +183,18 @@
       const fromLevel = Object.entries(DT.LEVEL_TITLES).filter(([n]) => lv >= Number(n)).map(([n, t]) => ({ title: t, from: `레벨 ${n}` }));
       return [...fromLevel, ...fromAch];
     }
+    // 아직 칭호 목록에서 못 본 새 칭호들 (Set)
+    newTitles() {
+      const seen = new Set(this.data.titlesSeen || []);
+      return new Set(this.titles().map((t) => t.title).filter((t) => !seen.has(t)));
+    }
+    // 칭호 목록을 열었을 때: 지금 가진 칭호를 모두 본 것으로 (다음에 열면 NEW가 사라짐)
+    markTitlesSeen() {
+      const all = new Set([...(this.data.titlesSeen || []), ...this.titles().map((t) => t.title)]);
+      if (all.size === (this.data.titlesSeen || []).length) return;
+      this.data.titlesSeen = [...all];
+      this.persist();
+    }
     setTitle(title) {
       this.data.title = title && this.titles().some((t) => t.title === title) ? title : null;
       this.persist();
@@ -203,6 +216,7 @@
       this.data.spent = Math.max(this.data.spent || 0, d.spent || 0);
       this.data.ticketsUsed = Math.max(this.data.ticketsUsed || 0, d.ticketsUsed || 0);
       this.data.levelSeen = Math.max(this.data.levelSeen || 1, d.levelSeen || 1);
+      this.data.titlesSeen = [...new Set([...(this.data.titlesSeen || []), ...(d.titlesSeen || [])])];
       if (!this.data.title && d.title) this.data.title = d.title;
       if (!this.data.nickname && d.nickname) this.data.nickname = d.nickname;
       if (!this.data.settledAt && d.settledAt) this.data.settledAt = d.settledAt;
