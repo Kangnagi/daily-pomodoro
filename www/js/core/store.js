@@ -300,6 +300,7 @@
     exportJson() {
       const data = { app: "DailyToeic", version: 2, exportedAt: new Date().toISOString(), settings: this.settings, records: this.records };
       if (this.workouts) data.workouts = this.workouts.records; // 운동모드 기록 (WorkoutStore)
+      if (this.arcade) data.arcade = this.arcade.data;         // 아케이드: 업적·쓴 화폐·칭호 (ArcadeStore)
       return JSON.stringify(data, null, 2);
     }
     importData(data) {
@@ -312,6 +313,7 @@
         if (data.settings.workout) this.settings.workout = Object.assign({}, this.settings.workout, data.settings.workout);
       }
       if (data.workouts && this.workouts) this.workouts.importData(data.workouts);
+      if (data.arcade && this.arcade) this.arcade.importData(data.arcade);
       this.migrate(); // 예전 형식 백업(토익 LC·RC 등)도 지금 형식으로
       this.write(RECORDS_KEY, this.records);
       this.write(SETTINGS_KEY, this.settings);

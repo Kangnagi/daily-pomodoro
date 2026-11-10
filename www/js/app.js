@@ -12,6 +12,7 @@
       this.router = new DT.Router();
 
       this.workouts = new DT.WorkoutStore(this.store); // 운동모드 기록
+      this.arcade = new DT.ArcadeStore(this.store, this.workouts); // 아케이드: 화폐·경험치·레벨·업적·칭호
       this.modes = new DT.ModeManager($("btnMode"), this.toast); // 위쪽 💪/📖 버튼: 공부모드 ↔ 운동모드
       this.theme = new DT.ThemeManager($("themePick"), this.toast); // 테마는 설정 창 안에서
       this.settings = new DT.SettingsDialog(this.store, this.toast);
@@ -48,9 +49,13 @@
       this.workoutStats = new DT.WorkoutStatsScreen(this.workouts, (k) => this.router.go("wlog", k));
       // 모드를 바꾸면 메인 화면으로
       this.modes.onChange(() => this.router.home());
+      // 아케이드: 프로필 화면(위쪽 바 사람 버튼), 지난 기록 정산 + 업적·레벨업 알림
+      this.profile = new DT.ProfileScreen(this.arcade, this.store);
+      this.profile.onOpen = () => this.router.go("profile");
+      this.arcadeNotify = new DT.ArcadeNotifier(this.arcade, this.store, () => this.router.go("profile"));
 
       // 각 화면을 라우터에 등록 (홈 캘린더는 항상 아래에 깔려 있음)
-      [this.sheet, this.timer, this.stats, this.record, this.studyLog, this.workoutScreen, this.workoutLog, this.workoutStats]
+      [this.sheet, this.timer, this.stats, this.record, this.studyLog, this.workoutScreen, this.workoutLog, this.workoutStats, this.profile]
         .forEach((v) => this.router.register(v));
       // 선택된 날짜 표시는 시트/기록/통계 화면이 열려 있는 동안 유지
       this.router.register({ name: "__selection", setActive: () => {
@@ -68,6 +73,7 @@
       $("btnSettings").addEventListener("click", showVersion);
       this.calendar.render();
       this.router.start();
+      this.arcadeNotify.start(); // 처음이면 지난 기록 정산 창, 아니면 새 업적·레벨업 확인
       this.registerServiceWorker();
     }
 

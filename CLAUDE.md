@@ -46,6 +46,20 @@ localStorage 키 dailyToeic.*, 백업 JSON의 app:"DailyToeic"(예전 백업 가
 - 날짜 시트(운동모드): 오늘 = 운동 시작·통계·운동 일지 / 지난 날 = 통계·운동 일지(2칸) / 미래 = 아직 오픈 전. 시험 영역 숨김.
 - 요약 카드(운동모드): [⚖️ 몸무게(최근)] [연속 운동] [이번 달] [오늘 운동], 캘린더 점 = 몸무게 기록, 범례 "운동량 · 몸무게".
 
+## 아케이드 (개발 중, 기획: docs/아케이드_기획안.md — 진행 상황 표가 맨 위에 있음)
+- 사용자는 **기획안의 한 줄씩** 개발을 요청함. 한 줄 끝나면 보고하고 다음 줄은 요청을 기다림.
+- `core/achievements.js`: 업적 정의(DT.ACHIEVEMENTS: id, cat, name, title, xp, goal, stat, unit, hidden) + 레벨 칭호(DT.LEVEL_TITLES)
+- `core/arcade-store.js` ArcadeStore (DT.app.arcade, store.arcade):
+  화폐·경험치는 저장 없이 **타이머 기록(공부 sessions, 운동 sessions)에서 매번 계산**. 직접 입력한 유산소 시간은 제외.
+  조각 = 타이머 60분, 초록 10·노랑 50·빨강 100조각, 레벨업마다 조각 2. 경험치 = 타이머 분 + 달성 업적 xp, 레벨 n→n+1 = 60(n+1).
+  timeline()이 기록을 날짜순으로 훑어 업적별 처음 달성일 계산 → achievements()/unlockReady(). 저장(localStorage `dailyToeic.arcade`):
+  achievements{id:날짜}, spent, title, nickname, ticketsUsed, settledAt, levelSeen. 백업 내보내기/가져오기에 포함.
+- `features/arcade-notify.js` ArcadeNotifier: 앱 시작 시 settledAt 없으면 지난 기록 정산(unlockReady, 결과 창 #settleDialog,
+  기록 없는 새 사용자는 창 없이), 이후 store.onChange마다 새 업적·레벨업(levelSeen과 비교) → 위에서 내려오는 배너 #arcadeBanner(순서대로 3.2초씩).
+- `features/profile-screen.js` ProfileScreen `#profile`: 위쪽 바 사람 버튼(#btnProfile). 닉네임(누르면 DT.ask.prompt), 칭호, 레벨·경험치 바,
+  지갑(도트 화폐 아이콘), 다음 조각까지, 칭호 칩, 업적 목록(분류별·진행률, 숨은 업적은 ??? 표시).
+- `features/arcade-icons.js` DT.ArcadeIcons: 8×8 도트 SVG 화폐 아이콘(빨강·노랑·초록 토마토, 토마토 조각), 프로필 선 아이콘. 이모지 없음.
+
 ## 현재 상태 (2026-11-09)
 - 최신 APK: `builds/DailyTOEIC.apk` = **2.1** (versionCode 13). APK 이후 아직 반영 안 된 변경 없음.
   - 2.1 에뮬레이터 확인: 모드 전환 시 위쪽 바 색이 파랑 → 청록 → 초록으로 0.9초 안에 바뀜, 앱 오류 없음

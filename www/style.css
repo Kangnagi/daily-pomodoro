@@ -767,3 +767,71 @@ body {
   transition: --primary .7s ease, --primary-weak .7s ease, --lv1 .7s ease, --lv2 .7s ease, --lv3 .7s ease, --lv4 .7s ease;
 }
 @media (prefers-reduced-motion: reduce) { body { transition: none; } }
+
+/* ===================== 아케이드 ===================== */
+/* 뽀모도로 화폐 아이콘 + 지갑 한 줄 */
+.cur-ico { display: inline-block; vertical-align: middle; image-rendering: pixelated; }
+.cur { display: inline-flex; align-items: center; gap: 4px; margin-right: 12px; font-variant-numeric: tabular-nums; }
+.cur b { font-size: 1rem; }
+
+/* 프로필 카드 */
+.pf-card { background: var(--card); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+.pf-name-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.pf-nickname { border: none; background: none; padding: 0; font-size: 1.35rem; font-weight: 800; color: var(--text); text-decoration: underline dotted var(--line); text-underline-offset: 5px; }
+.pf-title { font-size: .9rem; font-weight: 700; color: var(--primary); }
+.pf-title.empty { color: var(--muted); font-weight: 500; }
+.pf-level-row { display: flex; align-items: center; gap: 10px; }
+.pf-level { font-weight: 800; font-size: 1.1rem; color: var(--primary); min-width: 54px; }
+.pf-bar { flex: 1; height: 10px; border-radius: 6px; background: var(--lv0); overflow: hidden; }
+.pf-bar i { display: block; height: 100%; background: var(--primary); border-radius: 6px; transition: width .4s; }
+.pf-bar.pf-piece { height: 6px; }
+.pf-bar.pf-piece i { background: #e5533d; }
+.pf-small { margin: 0; font-size: .78rem; color: var(--muted); }
+.pf-wallet { margin-top: 6px; }
+
+/* 칭호 고르기 */
+.title-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.title-chip { border: 1px solid var(--line); background: var(--card); border-radius: 20px; padding: 5px 12px; font-size: .82rem; color: var(--text); }
+.title-chip.on { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 700; }
+
+/* 업적 목록 */
+.ach-cat { margin: 14px 0 6px; font-size: .82rem; color: var(--muted); }
+.ach { background: var(--card); border-radius: 10px; padding: 9px 12px; margin-bottom: 6px; opacity: .72; }
+.ach.done { opacity: 1; box-shadow: inset 3px 0 0 var(--primary); }
+.ach-top { display: flex; justify-content: space-between; gap: 8px; font-size: .9rem; }
+.ach-top span { color: var(--muted); font-size: .78rem; white-space: nowrap; }
+.ach.done .ach-top span { color: var(--primary); font-weight: 700; }
+.ach-sub { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+.ach-bar { height: 5px; border-radius: 3px; background: var(--lv0); margin-top: 6px; overflow: hidden; }
+.ach-bar i { display: block; height: 100%; background: var(--primary); opacity: .7; }
+
+/* 지난 기록 정산 창 */
+.settle-dialog h2 { text-align: center; }
+.settle-lead { margin: 0; text-align: center; color: var(--muted); font-size: .88rem; }
+.settle-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.settle-grid div { background: var(--primary-weak); border-radius: 10px; padding: 8px 4px; text-align: center; display: flex; flex-direction: column; gap: 2px; }
+.settle-grid span { font-size: .72rem; color: var(--muted); }
+.settle-grid b { font-size: .95rem; }
+.settle-wallet { text-align: center; padding: 6px 0; }
+.settle-ticket { margin: 0; text-align: center; font-size: .85rem; font-weight: 700; color: var(--primary); }
+.settle-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; max-height: 32vh; overflow: auto; }
+.settle-list li { display: flex; justify-content: space-between; gap: 8px; font-size: .85rem; background: var(--bg); border-radius: 8px; padding: 6px 10px; }
+.settle-list li span { color: var(--muted); font-size: .78rem; }
+.settle-more { margin: 0; text-align: center; font-size: .78rem; color: var(--muted); }
+
+/* 업적 달성·레벨업 배너 (위에서 내려옴, 누르면 프로필) */
+.arcade-banner {
+  position: fixed; left: 50%; top: max(10px, env(safe-area-inset-top)); z-index: 60;
+  transform: translate(-50%, -140%); transition: transform .35s cubic-bezier(.2, .9, .3, 1.2);
+  width: min(360px, calc(100vw - 24px)); display: flex; align-items: center; gap: 12px;
+  background: var(--card); color: var(--text); border-radius: 16px; padding: 10px 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.22); border: 2px solid var(--primary); cursor: pointer;
+}
+.arcade-banner.show { transform: translate(-50%, 0); }
+.arcade-banner.level { border-color: #e5533d; }
+.ab-badge { flex: none; display: flex; }
+.ab-text { display: flex; flex-direction: column; min-width: 0; }
+.ab-text small { font-size: .72rem; color: var(--primary); font-weight: 800; letter-spacing: .05em; }
+.arcade-banner.level .ab-text small { color: #e5533d; }
+.ab-text b { font-size: 1rem; }
+.ab-text span { font-size: .78rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

@@ -26,6 +26,7 @@
         <button id="wtimerChip" class="timer-chip w-chip hidden" type="button" title="운동 타이머로 이동"></button>
         <!-- 공부모드 ↔ 운동모드 (테마 변경은 설정 안으로) -->
         <button id="btnMode" class="icon-btn mode-btn" aria-label="운동모드로 바꾸기" title="운동모드로 바꾸기">💪</button>
+        <button id="btnProfile" class="icon-btn" aria-label="내 프로필" title="내 프로필"></button>
         <button id="btnSettings" class="icon-btn" aria-label="설정" title="설정"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
       </div>
     </header>
@@ -360,6 +361,38 @@
     </div>
   </section>
 
+  <!-- ===== 아케이드: 내 프로필 (닉네임·칭호·레벨·지갑·업적) ===== -->
+  <section class="screen" id="profileScreen" aria-label="내 프로필">
+    <header class="screen-head">
+      <button type="button" class="icon-btn" data-back aria-label="뒤로">‹</button>
+      <h2>내 프로필</h2>
+      <span class="screen-head-spacer"></span>
+    </header>
+    <div class="screen-body">
+      <div class="pf-card">
+        <div class="pf-name-row">
+          <button type="button" class="pf-nickname" id="pfNickname" title="닉네임 바꾸기">나</button>
+          <span class="pf-title" id="pfTitle">칭호 없음</span>
+        </div>
+        <div class="pf-level-row">
+          <span class="pf-level" id="pfLevel">Lv.1</span>
+          <div class="pf-bar"><i id="pfXpBar"></i></div>
+        </div>
+        <p class="pf-small" id="pfXpText"></p>
+        <div class="pf-wallet" id="pfWallet"></div>
+        <div class="pf-bar pf-piece"><i id="pfPieceBar"></i></div>
+        <p class="pf-small" id="pfPieceText"></p>
+        <p class="pf-small" id="pfStats"></p>
+      </div>
+
+      <h3>칭호</h3>
+      <div class="title-chips" id="pfTitles"></div>
+
+      <h3>업적 <small id="pfAchCount"></small></h3>
+      <div id="pfAchievements"></div>
+    </div>
+  </section>
+
   <!-- ===== 공부한 시간 화면 (지난 날짜: 타이머로 기록된 시간 보기) ===== -->
   <section class="screen" id="studyLogScreen" aria-label="공부한 시간">
     <header class="screen-head">
@@ -488,6 +521,22 @@
     </form>
   </dialog>
 
+  <!-- ===== 아케이드: 지난 기록 정산 결과 창 (처음 한 번) ===== -->
+  <dialog id="settleDialog" class="settle-dialog">
+    <form method="dialog">
+      <h2>아케이드 시작!</h2>
+      <div id="settleBody"></div>
+      <div class="dialog-actions">
+        <span class="spacer"></span>
+        <button type="button" id="settleClose">닫기</button>
+        <button type="button" id="settleProfile" class="primary">프로필 보기</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ===== 아케이드: 업적 달성·레벨업 배너 (위에서 내려옴) ===== -->
+  <div id="arcadeBanner" class="arcade-banner" role="status" aria-live="polite"></div>
+
   <div id="toast" class="toast"></div>
 
   <!-- 공통 → 기능별 → 앱 시작 순서로 로드 -->
@@ -496,6 +545,8 @@
   <script src="js/core/ask.js"></script>
   <script src="js/core/store.js"></script>
   <script src="js/core/workout-store.js"></script>
+  <script src="js/core/achievements.js"></script>
+  <script src="js/core/arcade-store.js"></script>
   <script src="js/core/mode.js"></script>
   <script src="js/core/router.js"></script>
   <script src="js/core/cloud-config.js"></script>
@@ -527,6 +578,9 @@
   <script src="js/features/workout-screen.js"></script>
   <script src="js/features/workout-log.js"></script>
   <script src="js/features/body-map.js"></script>
+  <script src="js/features/arcade-icons.js"></script>
+  <script src="js/features/arcade-notify.js"></script>
+  <script src="js/features/profile-screen.js"></script>
   <script src="js/features/workout-stats.js"></script>
   <script src="js/features/settings.js"></script>
   <script src="js/features/account-panel.js"></script>
