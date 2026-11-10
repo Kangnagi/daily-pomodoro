@@ -2,7 +2,7 @@
 (() => {
   "use strict";
   const { $ } = DT.utils;
-  const APP_VERSION = "2.2 (2026-11-10)"; // 설치된 버전 확인용 (android/app/build.gradle 의 versionName과 맞춤)
+  const APP_VERSION = "2.3 (2026-11-10)"; // 설치된 버전 확인용 (android/app/build.gradle 의 versionName과 맞춤)
 
   class App {
     constructor() {

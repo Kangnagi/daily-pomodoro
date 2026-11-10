@@ -63,7 +63,7 @@ localStorage 키 dailyToeic.*, 백업 JSON의 app:"DailyToeic"(예전 백업 가
 - `features/arcade-icons.js` DT.ArcadeIcons: 8×8 도트 SVG 화폐 아이콘(빨강·노랑·초록 토마토, 토마토 조각), 프로필 선 아이콘. 이모지 없음.
 
 ## 현재 상태 (2026-11-10)
-- 최신 APK: `builds/Pomodoro.apk` (2026-11-10에 파일 이름을 DailyTOEIC.apk → Pomodoro.apk로 바꿈) = **2.2** (versionCode 14, 아케이드 1단계). APK 이후 아직 반영 안 된 변경 없음.
+- 최신 APK: `builds/Pomodoro.apk` (2026-11-10에 파일 이름을 DailyTOEIC.apk → Pomodoro.apk로 바꿈) = **2.3** (versionCode 15, 아케이드 1단계 + 프로필 다듬기: 칭호 목록 애니메이션·NEW 칭호·뽑기권 표시). APK 이후 아직 반영 안 된 변경 없음.
   - 2.2 에뮬레이터 확인: 정산 창(테스트 기록 → Lv.9·업적 8개·노랑1 조각6), 프로필 버튼 → 프로필, 뒤로가기 → 메인, 업적 배너.
   - 2.2 빌드 중 고친 것: 숨긴 배너 테두리가 휴대폰 상태 표시줄 아래로 보이던 것(visibility hidden + 더 위로),
     프로필 "다음 조각까지" 바 높이 0(세로 flex 카드 안의 flex:1 → flex:none)
