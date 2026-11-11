@@ -3,6 +3,7 @@
 공부 기록 캘린더 + 타임타이머 스타일 뽀모도로 앱. 웹(www/)과 안드로이드 앱(Capacitor APK) 둘 다.
 2026-10-15에 토익 전용 → 일반 공부 타이머로 방향 전환, 보이는 이름만 "Daily Study"로 바꿈.
 폴더는 2026-11-03에 `Desktop\DailyToeic` → `Desktop\DailyPomodoro`로 이름을 바꿨다 (GitHub 저장소 이름 daily-pomodoro에 맞춤).
+2026-11-11에 바탕화면에서 `C:\dev\DailyPomodoro`로 옮겼다 (개발 폴더는 모두 `C:\dev`에 모음).
 **앱 내부 이름은 그대로 둔다**: 패키지 com.kch.dailytoeic(바꾸면 다른 앱으로 설치돼 기록이 안 넘어감),
 localStorage 키 dailyToeic.*, 백업 JSON의 app:"DailyToeic"(예전 백업 가져오기 호환), SW 캐시 이름 daily-toeic-vNN.
 아이콘·스플래시는 `python tools/make_icons.py`로 다시 만든다 (LABEL="STUDY", APP_NAME="Daily Study").
