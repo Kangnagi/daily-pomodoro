@@ -60,7 +60,12 @@ localStorage 키 dailyToeic.*, 백업 JSON의 app:"DailyToeic"(예전 백업 가
   기록 없는 새 사용자는 창 없이), 이후 store.onChange마다 새 업적·레벨업(levelSeen과 비교) → 위에서 내려오는 배너 #arcadeBanner(순서대로 3.2초씩).
 - `features/profile-screen.js` ProfileScreen `#profile`: 위쪽 바 사람 버튼(#btnProfile). 닉네임(누르면 DT.ask.prompt), 칭호, 레벨·경험치 바,
   지갑(도트 화폐 아이콘), 다음 조각까지, 칭호 칩, 업적 목록(분류별·진행률, 숨은 업적은 ??? 표시).
-- `features/arcade-icons.js` DT.ArcadeIcons: 8×8 도트 SVG 화폐 아이콘(빨강·노랑·초록 토마토, 토마토 조각), 프로필 선 아이콘. 이모지 없음.
+- `features/arcade-icons.js` DT.ArcadeIcons: 도트 SVG 화폐 아이콘(빨강·노랑·초록 토마토, 토마토 조각), 뽑기권 티켓, 프로필 선 아이콘. 이모지 없음.
+  **모든 도트 그림을 16×16으로 바꾸는 중** (사용자가 직접 그려서 줌). 받은 PNG 원본은 `docs/도트원본/`에 두고,
+  칸 문자 문자열 + 색 팔레트로 옮겨 코드로 그림(A 방식). 칸 수는 그림 줄 수로 정해져 8×8·16×16이 섞여도 같은 크기로 보임.
+  16×16 완료: 토마토(Tomato.pixil → 빨강은 원본 색, 노랑·초록은 팔레트만 바꿈), 토마토 조각(peace_of_Tomato.pixil) / 뽑기권은 32×32 케첩병 모티브(Ketchup_Ticket.pixil, 상표 글자·로고 없이 색·모양만).
+  사용자는 Pixilart(.pixil)로 그림 → .pixil은 JSON이고 frames[0].preview(또는 layers 합성)가 PNG(base64, 'base64,' 뒤부터)라 그걸 칸 문자로 옮김.
+  옮긴 뒤 코드가 그린 칸과 원본 PNG가 칸마다 같은지 비교해서 확인.
 
 ## 현재 상태 (2026-11-10)
 - 최신 APK: `builds/Pomodoro.apk` (2026-11-10에 파일 이름을 DailyTOEIC.apk → Pomodoro.apk로 바꿈) = **2.3** (versionCode 15, 아케이드 1단계 + 프로필 다듬기: 칭호 목록 애니메이션·NEW 칭호·뽑기권 표시). APK 이후 아직 반영 안 된 변경 없음.
